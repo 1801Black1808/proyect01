@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Carta Troll con Stitch</title>
+<style>
+  :root{
+    --bg:#d9f4ff;             /* celeste suave */
+    --card:#ffffff;
+    --accent:#4dabf7;         /* azul claro */
+    --accent-dark:#339af0;    /* azul más oscuro */
+    --shadow:#74c0fc;         /* sombra azul clara */
+    --btn:#3bc9db;            /* turquesa */
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:var(--bg);
+    font-family:Arial,Helvetica,sans-serif;
+    position:relative;
+  }
+  .card{
+    width:95%;
+    max-width:480px;
+    background:var(--card);
+    border-radius:15px;
+    box-shadow:0 0 15px var(--shadow);
+    padding:22px 28px;
+    text-align:center;
+    position:relative;
+    overflow: visible;
+  }
+  h2{margin-top:0}
+  .opt{
+    background:var(--accent);
+    color:#fff;
+    padding:12px;
+    margin:10px 0;
+    border-radius:8px;
+    cursor:pointer;
+    user-select:none;
+    transition:.4s;
+    position:relative;
+  }
+  .opt:hover{background:var(--accent-dark)}
+  .explode {
+    animation: explodeAnim 0.7s forwards;
+  }
+  .shatter {
+    animation: shatterAnim 0.7s forwards;
+  }
+  @keyframes explodeAnim{
+    0%{transform:scale(1) rotate(0deg);opacity:1}
+    50%{transform:scale(1.4) rotate(15deg);opacity:.7}
+    100%{transform:scale(0) rotate(720deg);opacity:0}
+  }
+  @keyframes shatterAnim{
+    0%{transform:translate(0,0) rotate(0deg);opacity:1;}
+    25%{transform:translate(-10px,-10px) rotate(-10deg);opacity:0.8;}
+    50%{transform:translate(15px,15px) rotate(15deg);opacity:0.5;}
+    75%{transform:translate(-20px,20px) rotate(-25deg);opacity:0.3;}
+    100%{transform:translate(30px,-30px) rotate(45deg);opacity:0;}
+  }
+  button{
+    margin-top:22px;
+    padding:10px 24px;
+    background:var(--btn);
+    border:none;
+    color:#fff;
+    border-radius:10px;
+    cursor:pointer;
+    font-size:1rem;
+  }
+
+  /* Stitch asomado - ahora a la izquierda */
+  #stitch-asomado {
+    position: fixed;
+    top: 10px;
+    left: 10px; /* antes estaba right:10px */
+    width: 80px;
+    z-index: 1000;
+    pointer-events: none;
+    opacity: 0;
+    animation: appearDisappear 2s ease forwards;
+  }
+
+  @keyframes appearDisappear {
+    0% {opacity: 0;}
+    20% {opacity: 1;}
+    80% {opacity: 1;}
+    100% {opacity: 0;}
+  }
+
+  /* Stitch corriendo - ahora a la derecha */
+  #stitch-corriendo {
+    position: fixed;
+    bottom: 10px;
+    right: 10px; /* antes estaba left:10px */
+    width: 120px;
+    z-index: 1001;
+    pointer-events: none;
+    display: none;
+  }
+</style>
+</head>
+<body>
+
+<div class="card" id="contenedor"></div>
+
+<!-- Stitch asomado -->
+<img id="stitch-asomado" src="https://i.pinimg.com/originals/bb/5a/6d/bb5a6dd6654076760da9e8af1da4f380.gif" alt="Stitch asomado">
+
+<!-- Stitch corriendo -->
+<img id="stitch-corriendo" src="https://www.icegif.com/wp-content/uploads/2023/08/icegif-588.gif" alt="Stitch corriendo y estrellándose">
+
+<script>
+const preguntas = [
+  {
+    texto:"Esta es una pregunta obligatoria (solo hay una opción)",
+    opciones:[
+      {txt:"Ok, acepto", resp:"Bien. No había opción, de todos modos 😌"}
+    ]
+  },
+  {
+    texto:"¿Me extrañate?",
+    opciones:[
+      {txt:"Sí",               efecto:"explode"},
+      {txt:"Sin duda, esperaba a que me respondieras",resp:"Es que estuve ocupado"},
+      {txt:"Te extrañé todo este tiempo",              resp:"¡Ooo no sabía que me querías tanto! jajaja"},
+      {txt:"No",               efecto:"shatter"},
+      {txt:"Esperaba que te murieras",                 efecto:"explode"}
+    ]
+  },
+  {
+    texto:"¿Y ya tienes novio?",
+    opciones:[
+      {txt:"Sí",  resp:"Ooooo"},
+      {txt:"No",  resp:"Ya veremos eso por te vas a quedar sola con la almohada 😏"},
+      {txt:"¿Qué te importa?", resp:"Yo no más decía 😅"},
+      {txt:"¿Por qué tengo que contarte mi vida?", resp:"No te enojes, solo pregunto 🤭"}
+    ]
+  },
+  {
+    texto:"¿Te gusta la carta?",
+    opciones:[
+      {txt:"Sí, está bonita",        resp:"Aww, ya vale, me derretí 🫠"},
+      {txt:"Más o menos",            resp:"Mejor que nada, ¿no? 😅"},
+      {txt:"Es rara como tú",        resp:"Oye, rara pero con estilo 😎"},
+      {txt:"¿Esto es una broma?",    resp:"Todo en esta vida es una broma, respóndeme bien 🤨"}
+    ]
+  },
+  {
+    texto:"¿Cuál fue tu primera impresión de mí?",
+    opciones:[
+      {txt:"Qué molestoso",          resp:"¡Lo sabía! Tengo talento para eso 😎"},
+      {txt:"Qué simpático",          resp:"Uy, qué halago inesperado 🥹"},
+      {txt:"Otro más del montón",    resp:"Bueno… al menos no era menos del montón"},
+      {txt:"Mejor ni digo",          resp:"Ahora sí me dejaste en suspenso"}
+    ]
+  },
+  {
+    texto:"Si te regalo algo, ¿qué esperas?",
+    opciones:[
+      {txt:"Algo hecho a mano",      resp:"Te haré una cosa tan rara que pensarás que fue arte moderno"},
+      {txt:"Algo carísimo",          resp:"Ah, con razón nunca quedo bien 😂"},
+      {txt:"Una carta que me saque una sonrisa", resp:"Oye... eso justo estoy intentando"},
+      {txt:"Solo que no lo olvides", resp:"¿Cómo olvidarte si ni en paz mental estás?"}
+    ]
+  },
+  {
+    texto:"¿Cómo te sientes hoy (de verdad)?",
+    opciones:[
+      {txt:"Feliz",           resp:"¡Eso quería saber! 😄"},
+      {txt:"Cansada pero bien",resp:"Ya, te toca un abrazo mental 🧸"},
+      {txt:"Pensativa",       resp:"A veces pensar mucho es bueno (y otras... no tanto)"},
+      {txt:"Ni idea, floto",  resp:"Flotar está bien, mientras no te vayas del planeta 🌍"}
+    ]
+  },
+  {
+    texto:"Si pudieras desaparecer un rato, ¿qué harías?",
+    opciones:[
+      {txt:"Dormir sin que nadie me moleste", resp:"Suena como un plan perfecto 😴"},
+      {txt:"Comer todo lo que quiera sin culpa",resp:"Con razón me quieres golpear 😅"},
+      {txt:"Ser invisible y hacer travesuras",  resp:"¡Uy, ya quiero ver esas travesuras! 😈"},
+      {txt:"Nada, mejor quedarme aquí",         resp:"Qué valiente, te admiro"}
+    ]
+  },
+  {
+    texto:"¿Qué te hace feliz últimamente?",
+    opciones:[
+      {txt:"La música",          resp:"Apuesto a que tienes buen gusto"},
+      {txt:"Mis amigos",         resp:"Con razón me quieres golpear"},
+      {txt:"Dormir",             resp:"Dormir es la mejor terapia no pagada"},
+      {txt:"Recordar buenos momentos", resp:"Esa respuesta vale mil"}
+    ]
+  },
+  {
+    texto:"¿Qué te gustaría que pasara este año?",
+    opciones:[
+      {txt:"Algo inesperado", resp:"Como esta carta, ¿no?"},
+      {txt:"Encontrar paz",   resp:"Lo mereces más de lo que crees"},
+      {txt:"Reír más",        resp:"Prometo seguir intentando eso"},
+      {txt:"Sentirme libre",  resp:"Entonces que vuele tu alma un rato, pero sin drama"}
+    ]
+  },
+  {
+    texto:"¿Me aguantas porque…?",
+    opciones:[
+      {txt:"Eres buena persona",  resp:"Ahora sí me puse suave… gracias"},
+      {txt:"Me haces reír",       resp:"¡Entonces sigo molestando!"},
+      {txt:"Ya no hay marcha atrás", resp:"Ah, viste, atrapada quedaste"},
+      {txt:"Porque sí y ya",      resp:"Ese ‘porque sí’ tiene peso emocional 😌"}
+    ]
+  }
+];
+
+let indice = 0;
+const cont = document.getElementById("contenedor");
+const stitchAsomado = document.getElementById("stitch-asomado");
+const stitchCorriendo = document.getElementById("stitch-corriendo");
+
+let asomadoCount = 0;
+const maxAsomado = 4;
+
+function renderPregunta() {
+  const q = preguntas[indice];
+  let html = `<h2>${q.texto}</h2>`;
+  q.opciones.forEach((op,i)=>{
+    html += `<div class="opt" data-i="${i}">${op.txt}</div>`;
+  });
+  cont.innerHTML = html;
+  document.querySelectorAll(".opt").forEach(el=>{
+    el.onclick = ()=>handleOption(el);
+  });
+}
+
+function handleOption(el){
+  const idxOp = +el.dataset.i;
+  const obj = preguntas[indice].opciones[idxOp];
+
+  if(!obj.resp){
+    const efecto = obj.efecto || (Math.random() > 0.5 ? "explode" : "shatter");
+    el.classList.add(efecto);
+    el.style.pointerEvents="none";
+    showStitchCorriendo();
+    setTimeout(()=>{ el.remove(); },700);
+    return;
+  }
+
+  cont.innerHTML = `<h2 style="min-height:40px;">${obj.resp}</h2><button onclick="siguiente()">Siguiente</button>`;
+}
+
+function siguiente(){
+  indice++;
+  if(indice < preguntas.length){
+    renderPregunta();
+  } else {
+    cont.innerHTML = `<h2>Fin de la carta. ¡Gracias por jugar! 🥳</h2><button onclick="reiniciar()">Volver a empezar</button>`;
+  }
+}
+
+function reiniciar(){
+  indice=0;
+  asomadoCount=0;
+  renderPregunta();
+  startStitchAsomadoInterval();
+}
+
+function showStitchAsomado(){
+  stitchAsomado.style.animation = "none";
+  void stitchAsomado.offsetWidth;
+  stitchAsomado.style.animation = "appearDisappear 2s ease forwards";
+}
+
+function showStitchCorriendo(){
+  stitchCorriendo.style.display = "block";
+  setTimeout(()=>{ stitchCorriendo.style.display = "none"; }, 2200);
+}
+
+function startStitchAsomadoInterval(){
+  showStitchAsomado();
+  asomadoCount++;
+  const intervalId = setInterval(()=>{
+    if(asomadoCount >= maxAsomado){
+      clearInterval(intervalId);
+      stitchAsomado.style.opacity = 0;
+      return;
+    }
+    showStitchAsomado();
+    asomadoCount++;
+  }, 20000);
+}
+
+/* ---------- Inicio ---------- */
+renderPregunta();
+startStitchAsomadoInterval();
+</script>
+</body>
+</html>
