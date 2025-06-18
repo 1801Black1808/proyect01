@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Teseracto en Fondo Blanco</title>
+  <style>
+    body {
+      background-color: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+
+    .container {
+      background-color: white;
+      width: 300px;
+      height: 300px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border: 2px solid #aaa;
+      position: relative;
+    }
+
+    .cube {
+      position: absolute;
+      width: 100px;
+      height: 100px;
+      border: 2px solid #00f;
+      transform: rotate(15deg) skew(15deg, 15deg);
+    }
+
+    .cube.inner {
+      left: 30px;
+      top: 30px;
+      border-color: #0ff;
+    }
+
+    .connector {
+      position: absolute;
+      width: 2px;
+      height: 30px;
+      background-color: #00f;
+      transform: rotate(45deg);
+    }
+
+    /* Manualmente posicionamos líneas de conexión */
+    .line1 { top: 50px; left: 50px; transform: rotate(45deg); height: 40px; }
+    .line2 { top: 50px; left: 150px; transform: rotate(-45deg); height: 40px; }
+    .line3 { top: 150px; left: 50px; transform: rotate(-45deg); height: 40px; }
+    .line4 { top: 150px; left: 150px; transform: rotate(45deg); height: 40px; }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="cube outer"></div>
+    <div class="cube inner"></div>
+    <div class="connector line1"></div>
+    <div class="connector line2"></div>
+    <div class="connector line3"></div>
+    <div class="connector line4"></div>
+  </div>
+</body>
+</html>
+
+

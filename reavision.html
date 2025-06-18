@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <title>CATÁLOGO</title>
+
+  <!-- Favicon personalizado (icono de persona) -->
+  <link rel="icon" href="https://img.freepik.com/vector-premium/icono-persona_109161-4672.jpg" type="image/png" />
+
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background-color: #f9c5d1; /* rosa suave */
+      font-family: Arial, sans-serif;
+      position: relative;
+      color: white;
+    }
+
+    /* Logo Zara arriba a la derecha */
+    .logo {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      width: 100px;
+      cursor: default;
+      user-select: none;
+      z-index: 1000;
+    }
+
+    /* Título centrado */
+    h1 {
+      margin-top: 100px;
+      text-align: center;
+      user-select: none;
+    }
+
+    .contenedor {
+      background-color: #ffffff;
+      max-width: 700px;
+      margin: 30px auto 60px auto;
+      padding: 40px;
+      text-align: center;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+      color: black;
+    }
+
+    img#productoImagen {
+      max-width: 100%;
+      height: auto;
+      margin-bottom: 20px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border: none;
+      border-radius: 5px;
+      background-color: #e91e63; /* rosa fuerte */
+      color: white;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #d81b60;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Logo Zara actualizado -->
+  <img
+    src="https://gcdn.emol.cl/lujo/files/2015/09/logo-1.jpg"
+    alt="Logo Zara"
+    class="logo"
+  />
+
+  <h1>Catálogo</h1>
+
+  <div class="contenedor">
+    <h2>Productos Destacados</h2>
+    <img
+      id="productoImagen"
+      src="https://www.dateriumsystem.com/appfiles/clientes/3/catalogo/500x500/snickers_6247-0904_5.jpg"
+      alt="Pantalón"
+      data-nombre="Pantalón"
+    />
+    <div>
+      <button onclick="buscarProducto(this)">Pantalón</button>
+      <button onclick="buscarProducto(this)">Camisa</button>
+      <button onclick="buscarProducto(this)">Zapatos</button>
+    </div>
+  </div>
+
+  <script>
+    function buscarProducto(boton) {
+      const nombre = boton.innerText.toLowerCase();
+
+      let url = '';
+      let nombreMostrar = '';
+
+      if (nombre === 'pantalón' || nombre === 'pantalon') {
+        url = 'https://www.dateriumsystem.com/appfiles/clientes/3/catalogo/500x500/snickers_6247-0904_5.jpg';
+        nombreMostrar = 'Pantalón';
+      } else if (nombre === 'camisa') {
+        url = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSG0SkLDxhjCS94Vxszr7VbYeH64jTqc_fBWw&s';
+        nombreMostrar = 'Camisa';
+      } else if (nombre === 'zapatos' || nombre === 'zapato') {
+        url = 'https://i.etsystatic.com/26160842/r/il/d1be88/3698875077/il_570xN.3698875077_bd7b.jpg';
+        nombreMostrar = 'Zapatos';
+      }
+
+      const img = document.getElementById('productoImagen');
+      img.src = url;
+      img.setAttribute('data-nombre', nombreMostrar);
+      img.alt = nombreMostrar;
+    }
+
+    // Al hacer clic en la imagen, muestra alerta que está agotado
+    document.getElementById('productoImagen').addEventListener('click', function () {
+      const nombre = this.getAttribute('data-nombre') || 'Producto';
+      alert(`${nombre} está agotado`);
+    });
+  </script>
+
+</body>
+</html>
+
